@@ -247,6 +247,7 @@
     "json-stable-stringify-without-jsonify": "^1.0.1",
     "json5": "^2.2.3",
     "jsonfile": "^6.1.0",
+    "jsonwebtoken": "^9.0.3",
     "just-extend": "^4.2.1",
     "keyv": "^4.5.4",
     "kleur": "^3.0.3",
