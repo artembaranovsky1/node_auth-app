@@ -1,6 +1,8 @@
 import express from 'express';
 import { authRouter } from './routes/auth.route.js';
 import cors from 'cors';
+import { userRouter } from './routes/user.route.js';
+import { erroMidlleware } from './midlleware/erroMidlleware.js';
 
 const PORT = process.env.PORT || 3005;
 
@@ -16,10 +18,13 @@ app.use(
 );
 
 app.use(authRouter);
+app.use('/user', userRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use(erroMidlleware);
 
 app.listen(PORT, () => {
   // console.log(`Server started on port ${PORT}`);

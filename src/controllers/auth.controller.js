@@ -8,7 +8,12 @@ const register = async (req, res) => {
   const { name, email, password } = req.body;
   const activationToken = uuidv4();
 
-  const newUser = await User.create({ name, email, password, activationToken });
+  const newUser = await User.create({
+    name,
+    email,
+    password,
+    activationToken,
+  });
 
   await emailService.sendActivationEmail(email, activationToken);
 
@@ -35,7 +40,7 @@ const login = async (req, res) => {
 
   const user = await userService.findByEmail(email);
 
-  if (!user || !user.password !== password) {
+  if (!user || user.password !== password) {
     return res.sendStatus(401);
   }
 
