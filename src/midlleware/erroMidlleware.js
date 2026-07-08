@@ -1,11 +1,14 @@
-export const erroMidlleware = (error, req, res, next) => {
-  if (error) {
-    res.status(500);
+import { ApiError } from '../controllers/expations/api.error.js';
 
-    res.send({
-      message: 'Server Error',
+export const erroMidlleware = (error, req, res, next) => {
+  if (error instanceof ApiError) {
+    return res.status(error.status).json({
+      message: error.message,
+      errors: error.errors,
     });
   }
 
-  next();
+  return res.status(500).json({
+    message: 'Server Error',
+  });
 };

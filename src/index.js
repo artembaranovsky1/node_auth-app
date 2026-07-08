@@ -18,7 +18,7 @@ app.use(
 );
 
 app.use(authRouter);
-app.use('/user', userRouter);
+app.use('/users', userRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
