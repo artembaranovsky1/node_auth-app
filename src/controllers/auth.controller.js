@@ -2,6 +2,8 @@ import { User } from '../models/user.js';
 import { userService } from '../services/user.service.js';
 import { jwtService } from '../services/jwt.service.js';
 import { ApiError } from './expations/api.error.js';
+import bcrypt from 'bcrypt';
+import { tokenService } from '../services/token.service.js';
 
 function validateName(name) {
   if (!name) {
@@ -44,7 +46,9 @@ const register = async (req, res) => {
     throw ApiError.badRequest('Bad request');
   }
 
-  await userService.register(name, email, password);
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await userService.register(name, email, hashedPassword);
 
   res.send({ message: 'Ok' });
 };
@@ -69,12 +73,45 @@ const login = async (req, res) => {
 
   const user = await userService.findByEmail(email);
 
-  if (!user || user.password !== password) {
-    return res.sendStatus(401);
+  if (!user) {
+    throw ApiError.badRequest('No such user');
   }
 
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw ApiError.badRequest('Passwords do not match');
+  }
+
+  generateToken(res, user);
+};
+
+const refresh = async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  const user = jwtService.verifyRefresh(refreshToken);
+
+  const token = await tokenService.getByToken(refreshToken);
+
+  if (!user || !token) {
+    throw ApiError.unauthorized('Refresh token');
+  }
+
+  generateToken(res, user);
+};
+
+const generateToken = async (res, user) => {
   const normalizedUser = userService.normazile(user);
+
   const accessToken = jwtService.sign(normalizedUser);
+  const refreshToken = jwtService.signRefresh(normalizedUser);
+
+  await tokenService.save(normalizedUser.id, refreshToken);
+
+  res.cookie('refreshToken', refreshToken, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  });
 
   res.send({
     user: normalizedUser,
@@ -82,8 +119,30 @@ const login = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const { refreshToken } = req.cookies || {};
+
+  if (!refreshToken) {
+    throw ApiError.unauthorized('Token is missing');
+  }
+
+  const userData = jwtService.verifyRefresh(refreshToken);
+
+  if (!userData) {
+    throw ApiError.unauthorized('Invalid token');
+  }
+
+  await tokenService.remove(userData.id);
+
+  res.clearCookie('refreshToken');
+
+  res.sendStatus(204);
+};
+
 export const authController = {
   register,
   activate,
   login,
+  refresh,
+  logout,
 };

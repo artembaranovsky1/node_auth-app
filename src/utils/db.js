@@ -8,3 +8,15 @@ export const client = new Sequelize({
   database: process.env.DB_DATABASE,
   dialect: 'postgres',
 });
+
+await client.authenticate();
+
+// const [version] = await client.query(`
+//   SELECT current_database(), inet_server_addr(), inet_server_port();
+// `);
+//
+// console.log(version);
+//
+// const [result] = await client.query('SELECT current_database()');
+//
+// console.log(result);

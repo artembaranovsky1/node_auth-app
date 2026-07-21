@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { emailService } from './email.service.js';
 import { ApiError } from '../controllers/expations/api.error.js';
 
-function getAllUsers() {
+function getUsers() {
   return User.findAll();
 }
 
@@ -39,6 +39,6 @@ async function register(name, email, password) {
 export const userService = {
   normazile,
   findByEmail,
-  getAllUsers,
+  getUsers,
   register,
 };

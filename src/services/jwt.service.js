@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 function sign(user) {
-  const token = jwt.sign({ foo: 'bar' }, process.env.JWT_SECRET);
-
-  return token;
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '15m' });
 }
 
 function verify(token) {
@@ -14,7 +12,21 @@ function verify(token) {
   }
 }
 
+function signRefresh(user) {
+  return jwt.sign(user, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+}
+
+function verifyRefresh(token) {
+  try {
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (error) {
+    return null;
+  }
+}
+
 export const jwtService = {
   sign,
   verify,
+  signRefresh,
+  verifyRefresh,
 };
