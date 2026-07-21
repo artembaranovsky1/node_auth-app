@@ -1,7 +1,8 @@
 import express from 'express';
 import { catchError } from '../utils/catchError.js';
 import { userController } from '../controllers/user.controller.js';
+import { authMiddleware } from '../midlleware/authMiddleware.js';
 
 export const userRouter = new express.Router();
 
-userRouter.get('/', catchError(userController.getAllUsers));
+userRouter.get('/', authMiddleware, catchError(userController.getAllUsers));
