@@ -53,6 +53,14 @@ async function updateName(user, newName) {
   return user;
 }
 
+async function updateEmail(user, newEmail) {
+  user.email = newEmail;
+
+  await user.save();
+
+  return user;
+}
+
 export const userService = {
   normazile,
   findByEmail,
@@ -60,4 +68,5 @@ export const userService = {
   register,
   updatePassword,
   updateName,
+  updateEmail,
 };

@@ -63,7 +63,7 @@ const activate = async (req, res) => {
   }
 
   user.activationToken = null;
-  user.save();
+  await user.save();
 
   res.send(user);
 };
@@ -91,17 +91,26 @@ const login = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
-  const { refreshToken } = req.cookies;
+  const { refreshToken } = req.cookies || {};
 
-  const user = jwtService.verifyRefresh(refreshToken);
-
-  const token = await tokenService.getByToken(refreshToken);
-
-  if (!user || !token) {
-    throw ApiError.unauthorized('Refresh token');
+  if (!refreshToken) {
+    throw ApiError.unauthorized('Refresh token is missing');
   }
 
-  generateToken(res, user);
+  const userData = jwtService.verifyRefresh(refreshToken);
+  const tokenFromDb = await tokenService.getByToken(refreshToken);
+
+  if (!userData || !tokenFromDb) {
+    throw ApiError.unauthorized('Invalid or expired refresh token');
+  }
+
+  const user = await userService.findById(userData.id);
+
+  if (!user) {
+    throw ApiError.unauthorized('User not found');
+  }
+
+  await generateToken(res, user);
 };
 
 const generateToken = async (res, user) => {

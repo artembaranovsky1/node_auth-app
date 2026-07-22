@@ -41,8 +41,23 @@ function sendResetEmail(email, token) {
   });
 }
 
+function sendChangeEmailNotification(oldEmail) {
+  const html = `
+    <h1>Security Notification: Email Changed</h1>
+    <p>The email address associated with your account was successfully changed.</p>
+    <p>If you did NOT perform this action, please contact our support team immediately to secure your account.</p>
+  `;
+
+  return send({
+    email: oldEmail,
+    html,
+    subject: 'Security Alert: Email address changed',
+  });
+}
+
 export const emailService = {
   send,
   sendActivationEmail,
   sendResetEmail,
+  sendChangeEmailNotification,
 };

@@ -135,6 +135,49 @@ const changePassword = async (req, res) => {
   res.status(200).send('Reset password successfully');
 };
 
+const changeEmail = async (req, res) => {
+  const userId = req.user.id;
+  const { password, newEmail1, newEmail2 } = req.body;
+
+  if (!password || !newEmail1 || !newEmail2) {
+    throw ApiError.badRequest(
+      'Password and new email confirmation are required',
+    );
+  }
+
+  if (newEmail1 !== newEmail2) {
+    throw ApiError.badRequest('New emails do not match');
+  }
+
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    throw ApiError.notFound('User not found');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw ApiError.badRequest('Invalid password');
+  }
+
+  const oldEmail = user.email;
+
+  if (oldEmail === newEmail1) {
+    throw ApiError.badRequest(
+      'New email must be different from the current one',
+    );
+  }
+
+  await userService.updateEmail(user, newEmail1);
+
+  await emailService.sendChangeEmailNotification(oldEmail);
+
+  res.status(200).json({
+    message: 'Email changed successfully. Notification sent to old email.',
+  });
+};
+
 export const userController = {
   getAllUsers,
   resetMail,
@@ -142,4 +185,5 @@ export const userController = {
   getProfile,
   changeName,
   changePassword,
+  changeEmail,
 };
