@@ -114,7 +114,7 @@ const refresh = async (req, res) => {
 };
 
 const generateToken = async (res, user) => {
-  const normalizedUser = userService.normazile(user);
+  const normalizedUser = userService.normalize(user);
 
   const accessToken = jwtService.sign(normalizedUser);
   const refreshToken = jwtService.signRefresh(normalizedUser);

@@ -26,6 +26,7 @@ userRouter.patch(
   authMiddleware,
   catchError(userController.changePassword),
 );
+
 userRouter.patch(
   '/profile-email',
   authMiddleware,
