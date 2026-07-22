@@ -36,9 +36,19 @@ async function register(name, email, password) {
   await emailService.sendActivationEmail(email, activationToken);
 }
 
+async function updatePassword(user, hashedPassword) {
+  user.password = hashedPassword;
+  user.resetToken = null;
+
+  await user.save();
+
+  return user;
+}
+
 export const userService = {
   normazile,
   findByEmail,
   getUsers,
   register,
+  updatePassword,
 };

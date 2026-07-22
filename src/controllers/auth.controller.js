@@ -83,7 +83,11 @@ const login = async (req, res) => {
     throw ApiError.badRequest('Passwords do not match');
   }
 
-  generateToken(res, user);
+  if (user.activationToken !== null) {
+    throw ApiError.badRequest('Please activate your email');
+  }
+
+  await generateToken(res, user);
 };
 
 const refresh = async (req, res) => {

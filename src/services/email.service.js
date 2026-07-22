@@ -28,7 +28,21 @@ function sendActivationEmail(email, token) {
   });
 }
 
+function sendResetEmail(email, token) {
+  const href = `${process.env.CLIENT_HOST}/users/reset-email/${token}`;
+  const html = `
+ <h1>Reset your password</h1>
+  <a href="${href}">${href}</a>`;
+
+  return send({
+    email,
+    html,
+    subject: 'Reset',
+  });
+}
+
 export const emailService = {
   send,
   sendActivationEmail,
+  sendResetEmail,
 };
