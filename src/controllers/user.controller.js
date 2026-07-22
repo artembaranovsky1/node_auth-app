@@ -42,6 +42,12 @@ const resetMail = async (req, res) => {
 const reset = async (req, res) => {
   const { resetToken } = req.params;
 
+  try {
+    jwt.verify(resetToken, process.env.JWT_SECRET);
+  } catch (err) {
+    throw ApiError.badRequest('Reset link has expired or is invalid');
+  }
+
   const user = await User.findOne({
     where: { resetToken },
   });
@@ -67,8 +73,73 @@ const reset = async (req, res) => {
   res.status(200).send('Reset password successfully');
 };
 
+const getProfile = async (req, res) => {
+  const userId = req.user.id;
+
+  const user = await User.findByPk(userId);
+  const normalizedUser = userService.normazile(user);
+
+  if (!normalizedUser) {
+    throw ApiError.notFound('User not found');
+  }
+
+  res.send(normalizedUser);
+};
+
+const changeName = async (req, res) => {
+  const userId = req.user.id;
+  const newName = req.body.name;
+
+  if (!newName) {
+    throw ApiError.badRequest('User name is required');
+  }
+
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    throw ApiError.notFound('User is not found');
+  }
+
+  await userService.updateName(user, newName);
+
+  res.status(200).json({ message: `Name changed to ${newName}` });
+};
+
+const changePassword = async (req, res) => {
+  const userId = req.user.id;
+  const { oldPassword, newPassword1, newPassword2 } = req.body;
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    throw ApiError.notFound('User is not found');
+  }
+
+  if (!oldPassword || !newPassword1 || !newPassword2) {
+    throw ApiError.notFound('passwords is required');
+  }
+
+  if (newPassword1 !== newPassword2) {
+    throw ApiError.badRequest('New passwords do not match');
+  }
+
+  const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+
+  if (!isOldPasswordCorrect) {
+    throw ApiError.badRequest('Incorrect old password');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword1, 10);
+
+  await userService.updatePassword(user, hashedPassword);
+
+  res.status(200).send('Reset password successfully');
+};
+
 export const userController = {
   getAllUsers,
   resetMail,
   reset,
+  getProfile,
+  changeName,
+  changePassword,
 };

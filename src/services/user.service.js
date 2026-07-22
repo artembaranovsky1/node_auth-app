@@ -45,10 +45,19 @@ async function updatePassword(user, hashedPassword) {
   return user;
 }
 
+async function updateName(user, newName) {
+  user.name = newName;
+
+  await user.save();
+
+  return user;
+}
+
 export const userService = {
   normazile,
   findByEmail,
   getUsers,
   register,
   updatePassword,
+  updateName,
 };
