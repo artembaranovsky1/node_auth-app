@@ -156,7 +156,9 @@ async function changePassword(
     throw ApiError.notFound('User is not found');
   }
 
-  if (newPassword1 === user.password) {
+  const isSamePassword = await bcrypt.compare(newPassword1, user.password);
+
+  if (isSamePassword) {
     throw ApiError.badRequest('You are already using this password');
   }
 
@@ -209,6 +211,15 @@ async function changeEmail(userId, { password, newEmail1, newEmail2 }) {
     throw ApiError.badRequest(
       'New email must be different from the current one',
     );
+  }
+
+
+  const existingUser = await findByEmail(newEmail1);
+
+  if (existingUser) {
+    throw ApiError.badRequest('Email is already in use', {
+      email: 'Email is already in use',
+    });
   }
 
   await updateEmail(user, newEmail1);

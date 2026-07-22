@@ -28,8 +28,20 @@ function validatePassword(password) {
     return 'Password is required';
   }
 
-  if (password.length < 6) {
-    return 'Password must be at least 6 characters';
+  if (password.length < 8) {
+    return 'Password must be at least 8 characters long';
+  }
+
+  if (!/\d/.test(password)) {
+    return 'Password must contain at least one digit';
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return 'Password must contain at least one uppercase letter';
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return 'Password must contain at least one lowercase letter';
   }
 }
 
@@ -43,7 +55,7 @@ const register = async (req, res) => {
   };
 
   if (errors.name || errors.email || errors.password) {
-    throw ApiError.badRequest('Bad request');
+    throw ApiError.badRequest('Validation error', errors);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
