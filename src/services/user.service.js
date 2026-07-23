@@ -1,10 +1,10 @@
-import { User } from '../models/user.js';
-import { v4 as uuidv4 } from 'uuid';
-import { emailService } from './email.service.js';
-import { ApiError } from '../controllers/expations/api.error.js';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { authController } from '../controllers/auth.controller.js';
+const { User } = require('../models/user');
+const { v4: uuidv4 } = require('uuid');
+const { emailService } = require('./email.service');
+const { ApiError } = require('../controllers/expations/api.error');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { authController } = require('../controllers/auth.controller');
 
 function getUsers() {
   return User.findAll();
@@ -241,7 +241,7 @@ async function updateEmail(user, newEmail) {
   return user;
 }
 
-export const userService = {
+const userService = {
   normalize,
   findByEmail,
   findById,
@@ -255,3 +255,5 @@ export const userService = {
   changePassword,
   changeEmail,
 };
+
+module.exports = { userService };

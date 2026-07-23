@@ -1,4 +1,4 @@
-import { userService } from '../services/user.service.js';
+const { userService } = require('../services/user.service');
 
 const getAllUsers = async (req, res) => {
   const users = await userService.getUsers();
@@ -62,7 +62,7 @@ const changeEmail = async (req, res) => {
   });
 };
 
-export const userController = {
+const userController = {
   getAllUsers,
   resetMail,
   reset,
@@ -71,3 +71,5 @@ export const userController = {
   changePassword,
   changeEmail,
 };
+
+module.exports = { userController };

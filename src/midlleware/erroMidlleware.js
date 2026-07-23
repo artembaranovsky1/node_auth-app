@@ -1,6 +1,6 @@
-import { ApiError } from '../controllers/expations/api.error.js';
+const { ApiError } = require('../controllers/expations/api.error');
 
-export const erroMidlleware = (error, req, res, next) => {
+const erroMidlleware = (error, req, res, next) => {
   if (error instanceof ApiError) {
     return res.status(error.status).json({
       message: error.message,
@@ -12,3 +12,5 @@ export const erroMidlleware = (error, req, res, next) => {
     message: 'Server Error',
   });
 };
+
+module.exports = { erroMidlleware };

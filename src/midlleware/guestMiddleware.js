@@ -1,6 +1,6 @@
-import { ApiError } from '../controllers/expations/api.error.js';
+const { ApiError } = require('../controllers/expations/api.error');
 
-export const guestMiddleware = (req, res, next) => {
+const guestMiddleware = (req, res, next) => {
   const { refreshToken } = req.cookies;
 
   if (refreshToken) {
@@ -9,3 +9,5 @@ export const guestMiddleware = (req, res, next) => {
 
   next();
 };
+
+module.exports = { guestMiddleware };

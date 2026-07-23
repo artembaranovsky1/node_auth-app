@@ -1,10 +1,10 @@
-import express from 'express';
-import { authController } from '../controllers/auth.controller.js';
-import { catchError } from '../utils/catchError.js';
-import { authMiddleware } from '../midlleware/authMiddleware.js';
-import { guestMiddleware } from '../midlleware/guestMiddleware.js';
+const express = require('express');
+const { authController } = require('../controllers/auth.controller');
+const { catchError } = require('../utils/catchError');
+const { authMiddleware } = require('../midlleware/authMiddleware');
+const { guestMiddleware } = require('../midlleware/guestMiddleware');
 
-export const authRouter = new express.Router();
+const authRouter = express.Router();
 
 authRouter.post(
   '/registration',
@@ -19,3 +19,5 @@ authRouter.get(
 authRouter.post('/login', guestMiddleware, catchError(authController.login));
 authRouter.get('/refresh', catchError(authController.refresh));
 authRouter.post('/logout', authMiddleware, catchError(authController.logout));
+
+module.exports = { authRouter };

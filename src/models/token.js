@@ -1,8 +1,8 @@
-import { client } from '../utils/db.js';
-import { DataTypes } from 'sequelize';
-import { User } from './user.js';
+const { client } = require('../utils/db');
+const { DataTypes } = require('sequelize');
+const { User } = require('./user');
 
-export const Token = client.define('token', {
+const Token = client.define('token', {
   refreshToken: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -11,3 +11,5 @@ export const Token = client.define('token', {
 
 Token.belongsTo(User);
 User.hasOne(Token);
+
+module.exports = { Token };

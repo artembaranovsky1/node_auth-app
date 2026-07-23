@@ -1,10 +1,10 @@
-import express from 'express';
-import { catchError } from '../utils/catchError.js';
-import { userController } from '../controllers/user.controller.js';
-import { authMiddleware } from '../midlleware/authMiddleware.js';
-import { guestMiddleware } from '../midlleware/guestMiddleware.js';
+const express = require('express');
+const { catchError } = require('../utils/catchError');
+const { userController } = require('../controllers/user.controller');
+const { authMiddleware } = require('../midlleware/authMiddleware');
+const { guestMiddleware } = require('../midlleware/guestMiddleware');
 
-export const userRouter = new express.Router();
+const userRouter = express.Router();
 
 // userRouter.get('/', authMiddleware, catchError(userController.getAllUsers));
 userRouter.post(
@@ -37,3 +37,5 @@ userRouter.patch(
   authMiddleware,
   catchError(userController.changeEmail),
 );
+
+module.exports = { userRouter };

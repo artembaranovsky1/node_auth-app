@@ -1,7 +1,7 @@
-import { jwtService } from '../services/jwt.service.js';
-import { User } from '../models/user.js';
+const { jwtService } = require('../services/jwt.service');
+const { User } = require('../models/user');
 
-export const authMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   const authorization = req.headers.authorization || '';
   const token = req.cookies.accessToken || authorization.replace('Bearer ', '');
 
@@ -29,3 +29,5 @@ export const authMiddleware = async (req, res, next) => {
 
   next();
 };
+
+module.exports = { authMiddleware };

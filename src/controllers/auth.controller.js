@@ -1,9 +1,9 @@
-import { User } from '../models/user.js';
-import { userService } from '../services/user.service.js';
-import { jwtService } from '../services/jwt.service.js';
-import { ApiError } from './expations/api.error.js';
-import bcrypt from 'bcrypt';
-import { tokenService } from '../services/token.service.js';
+const { User } = require('../models/user');
+const { userService } = require('../services/user.service');
+const { jwtService } = require('../services/jwt.service');
+const { ApiError } = require('./expations/api.error');
+const bcrypt = require('bcrypt');
+const { tokenService } = require('../services/token.service');
 
 function validateName(name) {
   if (!name) {
@@ -170,7 +170,7 @@ const logout = async (req, res) => {
   });
 };
 
-export const authController = {
+const authController = {
   register,
   activate,
   login,
@@ -178,3 +178,5 @@ export const authController = {
   logout,
   validatePassword,
 };
+
+module.exports = { authController };

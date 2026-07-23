@@ -1,10 +1,12 @@
-export class ApiError extends Error {
+class ApiError extends Error {
   constructor({ message, status, errors = {} }) {
     super(message);
 
     this.status = status;
     this.message = message;
+    this.errors = errors;
   }
+
   static badRequest(message, errors) {
     return new ApiError({
       message,
@@ -29,3 +31,5 @@ export class ApiError extends Error {
     });
   }
 }
+
+module.exports = { ApiError };
