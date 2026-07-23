@@ -3,7 +3,6 @@ import { User } from '../models/user.js';
 
 export const authMiddleware = async (req, res, next) => {
   const authorization = req.headers.authorization || '';
-  // const [, token] = authorization.split(' ');
   const token = req.cookies.accessToken || authorization.replace('Bearer ', '');
 
   if (!token) {
