@@ -35,7 +35,7 @@ const changeName = async (req, res) => {
 
   await userService.updateName(userId, newName);
 
-  res.status(200).json({ message: `Name changed to ${newName}` });
+  res.status(200).json({ message: 'Name changed successfully' });
 };
 
 const changePassword = async (req, res) => {
@@ -48,7 +48,7 @@ const changePassword = async (req, res) => {
     newPassword2,
   });
 
-  res.status(200).send('Reset password successfully');
+  res.status(200).send('Password changed successfully');
 };
 
 const changeEmail = async (req, res) => {

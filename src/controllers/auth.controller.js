@@ -19,7 +19,7 @@ function validateEmail(email) {
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if (!regex.test(email)) {
-    return 'Email is required';
+    return 'Email is invalid';
   }
 }
 
@@ -77,7 +77,10 @@ const activate = async (req, res) => {
   user.activationToken = null;
   await user.save();
 
-  res.send(user);
+  res.send({
+    message: 'Account successfully activated',
+    redirectUrl: '/users/profile',
+  });
 };
 
 const login = async (req, res) => {
@@ -161,7 +164,10 @@ const logout = async (req, res) => {
 
   res.clearCookie('refreshToken');
 
-  res.sendStatus(204);
+  res.send({
+    message: 'Logout successfully',
+    redirectUrl: '/users/login',
+  });
 };
 
 export const authController = {
@@ -170,4 +176,5 @@ export const authController = {
   login,
   refresh,
   logout,
+  validatePassword,
 };

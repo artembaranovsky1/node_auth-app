@@ -17,8 +17,31 @@ export function send({ email, subject, html }) {
 function sendActivationEmail(email, token) {
   const href = `${process.env.CLIENT_HOST}/activation/${token}`;
   const html = `
-  <h1>Activate account</h1>
-  <a href="${href}">${href}</a>
+  <h1>Activate Your Account</h1>
+<p>Thank you for registering!</p>
+<p>To complete your registration and activate your account, please click the button below.</p>
+
+<p>
+  <a
+    href="${href}"
+    style="
+      display:inline-block;
+      padding:12px 24px;
+      background:#4F46E5;
+      color:#ffffff;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:bold;
+    "
+  >
+    Activate Account
+  </a>
+</p>
+
+<p>If the button doesn't work, copy and paste the following link into your browser:</p>
+<p><a href="${href}">${href}</a></p>
+
+<p>If you did not create this account, you can safely ignore this email.</p>
 `;
 
   return send({
@@ -31,8 +54,36 @@ function sendActivationEmail(email, token) {
 function sendResetEmail(email, token) {
   const href = `${process.env.CLIENT_HOST}/users/reset-email/${token}`;
   const html = `
- <h1>Reset your password</h1>
-  <a href="${href}">${href}</a>`;
+ <h1>Reset Your Password</h1>
+
+<p>We received a request to reset the password for your account.</p>
+
+<p>Click the button below to create a new password.</p>
+
+<p>
+  <a
+    href="${href}"
+    style="
+      display:inline-block;
+      padding:12px 24px;
+      background:#4F46E5;
+      color:#ffffff;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:bold;
+    "
+  >
+    Reset Password
+  </a>
+</p>
+
+<p>If the button doesn't work, copy and paste the following link into your browser:</p>
+
+<p><a href="${href}">${href}</a></p>
+
+<p>This password reset link will expire in 1 hour.</p>
+
+<p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>`;
 
   return send({
     email,

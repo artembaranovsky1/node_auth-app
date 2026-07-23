@@ -4,6 +4,7 @@ import { emailService } from './email.service.js';
 import { ApiError } from '../controllers/expations/api.error.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { authController } from '../controllers/auth.controller.js';
 
 function getUsers() {
   return User.findAll();
@@ -110,7 +111,7 @@ async function getProfile(userId) {
   const user = await findById(userId);
 
   if (!user) {
-    throw ApiError.badRequest('User not found');
+    throw ApiError.notFound('User not found');
   }
 
   return normalize(user);
@@ -142,8 +143,14 @@ async function changePassword(
   userId,
   { oldPassword, newPassword1, newPassword2 },
 ) {
+  const passwordError = authController.validatePassword(newPassword1);
+
+  if (passwordError) {
+    throw ApiError.badRequest(passwordError);
+  }
+
   if (!oldPassword || !newPassword1 || !newPassword2) {
-    throw ApiError.badRequest('passwords is required');
+    throw ApiError.badRequest('Password is required');
   }
 
   if (newPassword1 !== newPassword2) {
@@ -212,7 +219,6 @@ async function changeEmail(userId, { password, newEmail1, newEmail2 }) {
       'New email must be different from the current one',
     );
   }
-
 
   const existingUser = await findByEmail(newEmail1);
 
