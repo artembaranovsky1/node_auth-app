@@ -80,6 +80,12 @@ async function resetPassword(resetToken, password1, password2) {
     throw ApiError.badRequest('Enter your password');
   }
 
+  const passwordError = authController.validatePassword(password1);
+
+  if (passwordError) {
+    throw ApiError.badRequest(passwordError);
+  }
+
   if (password1 !== password2) {
     throw ApiError.badRequest('Passwords do not match');
   }

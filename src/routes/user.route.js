@@ -12,7 +12,12 @@ userRouter.post(
   guestMiddleware,
   catchError(userController.resetMail),
 );
-userRouter.post('/reset-email/:resetToken', catchError(userController.reset));
+
+userRouter.post(
+  '/reset-email/:resetToken',
+  guestMiddleware,
+  catchError(userController.reset),
+);
 
 userRouter.get(
   '/profile',
